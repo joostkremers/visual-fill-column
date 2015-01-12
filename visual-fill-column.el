@@ -36,14 +36,16 @@
 
 (defcustom visual-fill-column-width nil
   "Width of the text area.
-By default, the global value of `fill-column' is used.
-Alternatively, the value can be specified relative to the window
-width. In this case, it must be a value between 0 and 1."
+By default, the global value of `fill-column' is used, but if
+this option is set to a value, it is used instead. Alternatively,
+the value can be specified relative to the window width. In this
+case, it must be a value between 0 and 1."
   :group 'visual-fill-column
-  :type '(choice (const :tag "Use `fill-column'" nil)
+  :type '(choice (const :tag "Use `fill-column'" :value nil)
+                 (integer :tag "Absolute width" :value 70)
                  (float :tag "Relative width:" :value 0.5)))
 (make-variable-buffer-local 'visual-fill-column-width)
-(put 'visual-fill-column-width 'safe-local-variable 'floatp)
+(put 'visual-fill-column-width 'safe-local-variable 'numberp)
 
 (defcustom visual-fill-column-disable-fringe t
   "Disable the fringe when `visual-fill-column-mode' is active."
@@ -114,14 +116,16 @@ in which `visual-line-mode' is active as well."
   "Set window margins for the current window."
   ;; calculate left & right margins
   (let* ((window (selected-window))
-         (current-width (window-total-width window))
+         (total-width (window-total-width window))
+         (width (or visual-fill-column-width
+                    fill-column))
          (margins (cond
-                   ((and (floatp visual-fill-column-width)
-                         (< 0 visual-fill-column-width 1))
-                    (- current-width (truncate (* current-width visual-fill-column-width))))
-                   (t (if (< (- current-width fill-column) 0) ; margins must be >= 0
+                   ((and (floatp width)
+                         (< 0 width 1))
+                    (- total-width (truncate (* total-width width))))
+                   (t (if (< (- total-width width) 0) ; margins must be >= 0
                           0
-                        (- current-width fill-column)))))
+                        (- total-width width)))))
          (left (if visual-fill-column-center-text
                    (/ margins 2)
                  0))
