@@ -1,6 +1,6 @@
 # `visual-fill-column-mode` #
 
-`visual-fill-column-mode` is a small minor mode that mimics the effect of `fill-column` in `visual-line-mode`. Instead of wrapping lines at the window edge, which is the standard behaviour of `visual-line-mode`, it wraps lines at `fill-column`. If `fill-column` is too large for the window, the text is wrapped at the window edge.
+`visual-fill-column-mode` is a small Emacs minor mode that mimics the effect of `fill-column` in `visual-line-mode`. Instead of wrapping lines at the window edge, which is the standard behaviour of `visual-line-mode`, it wraps lines at `fill-column`. If `fill-column` is too large for the window, the text is wrapped at the window edge.
 
 
 ## Installation ##
@@ -21,7 +21,7 @@ To use `visual-fill-column-mode` with `visual-line-mode`, use the command `globa
 
 `visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right margin.
 
-Widening the margin has the effect that the fringe is pushed inward. Since the fringe is visible, this has a somewhat disturbing, because it looks like there’s another window to the left. For this reason, the left fringe is disabled by default.
+Widening the margin causes the fringe to be pushed inward. Since the fringe is visible, this has a somewhat disturbing effect, because it looks like there’s another window to the left. For this reason, the left fringe is disabled by default.
 
 
 ## Options ##
