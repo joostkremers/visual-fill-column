@@ -27,4 +27,4 @@ Widening the margin causes the fringe to be pushed inward. Since the fringe is v
 
 `visual-fill-column-disable-fringe`: if set to `t`, the left fringe is disabled. Note that if `visual-fill-column-center-text` is set to `t`, both the left and right fringes are disabled.
 
-All three options are buffer-local, so the values you set through Customize are default values. They can also be set in mode hooks of directory or file local variables in order to customise particular files or file types.
+All three options are buffer-local, so the values you set through Customize are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
