@@ -21,7 +21,7 @@ Widening the margin causes the fringe to be pushed inward. Since the fringe is v
 
 ## Options ##
 
-`visual-fill-column-width`: column at which to wrap lines. If set to `nil` (the default), use the value of `fill-column` instead. Can also be set to a fraction between `0` and `1`, in which case the text width is relative to the window width.
+`visual-fill-column-width`: column at which to wrap lines. If set to `nil` (the default), use the value of `fill-column` instead.
 
 `visual-fill-column-center-text`: if set to `t`, centre the text area in the window. By default, the text is displayed at the window’s (left) edge, mimicking the effect of `fill-column`.
 

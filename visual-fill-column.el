@@ -37,13 +37,10 @@
 (defcustom visual-fill-column-width nil
   "Width of the text area.
 By default, the global value of `fill-column' is used, but if
-this option is set to a value, it is used instead. Alternatively,
-the value can be specified relative to the window width. In this
-case, it must be a value between 0 and 1."
+this option is set to a value, it is used instead."
   :group 'visual-fill-column
   :type '(choice (const :tag "Use `fill-column'" :value nil)
-                 (integer :tag "Absolute width" :value 70)
-                 (float :tag "Relative width:" :value 0.5)))
+                 (integer :tag "Specify width" :value 70)))
 (make-variable-buffer-local 'visual-fill-column-width)
 (put 'visual-fill-column-width 'safe-local-variable 'numberp)
 
@@ -119,13 +116,9 @@ in which `visual-line-mode' is active as well."
          (total-width (window-total-width window))
          (width (or visual-fill-column-width
                     fill-column))
-         (margins (cond
-                   ((and (floatp width)
-                         (< 0 width 1))
-                    (- total-width (truncate (* total-width width))))
-                   (t (if (< (- total-width width) 0) ; margins must be >= 0
-                          0
-                        (- total-width width)))))
+         (margins (if (< (- total-width width) 0) ; margins must be >= 0
+                      0
+                    (- total-width width)))
          (left (if visual-fill-column-center-text
                    (/ margins 2)
                  0))
