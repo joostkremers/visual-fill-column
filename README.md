@@ -5,7 +5,7 @@
 
 ## Installation ##
 
-To install `visual-fill-column-mode`, simply put `visual-fill-column-mode.el` in your load path, (optionally) byte-compile it, and add `(require ’visual-fill-column)` to your `init.el`.
+Install `visual-fill-column-mode` via [Melpa](http://melpa.org), or put `visual-fill-column-mode.el` in your load path, (optionally) byte-compile it, and add `(require ’visual-fill-column)` to your `init.el`.
 
 
 ## Usage ##
