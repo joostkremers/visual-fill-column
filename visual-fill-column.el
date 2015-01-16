@@ -52,7 +52,7 @@ this option is set to a value, it is used instead."
   "Disable the fringe when `visual-fill-column-mode' is active."
   :group 'visual-fill-column
   :type '(choice (const :tag "Do not disable the fringes" nil)
-                 (const :tag "Disable the fringes' t")))
+                 (const :tag "Disable the fringes" t)))
 (make-variable-buffer-local 'visual-fill-column-disable-fringe)
 (put 'visual-fill-column-disable-fringe 'safe-local-variable 'symbolp)
 
