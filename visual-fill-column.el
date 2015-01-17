@@ -92,13 +92,12 @@ in which `visual-line-mode' is active as well."
 (defun visual-fill-column-mode--disable ()
   "Disable `visual-fill-column-mode' for the current buffer."
   (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window t)
-  (set-window-margins (selected-window) 0 0)
-  (when visual-fill-column-disable-fringe
-    (set-window-fringes (selected-window) nil nil)))
+  (set-window-fringes (selected-window) nil)
+  (set-window-margins (selected-window) 0 0))
 
 (defun visual-fill-column--adjust-window ()
   "Adjust the window margins and fringes."
-  (setq fringes-outside-margins visual-fill-column-fringes-outside-margins)
+  (set-window-fringes (selected-window) nil nil visual-fill-column-fringes-outside-margins)
   (visual-fill-column--set-margins))
 
 (defun visual-fill-column--set-margins ()
