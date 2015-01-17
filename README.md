@@ -16,7 +16,7 @@ However, `visual-fill-column-mode` is not tied to `visual-line-mode`: it is perf
 
 `visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
 
-Widening the margin causes the fringe to be pushed inward. Since the fringe is visible, this has a somewhat disturbing effect, because it looks like there’s another window to the left, even though there isn’t. For this reason, the left fringe is disabled by default.
+Widening the margin causes the fringe to be pushed inward. For this reason, the fringes are placed outside the margins by setting the variable `fringes-outside-margins` to `t`.
 
 
 ## Options ##
@@ -25,6 +25,6 @@ Widening the margin causes the fringe to be pushed inward. Since the fringe is v
 
 `visual-fill-column-center-text`: if set to `t`, centre the text area in the window. By default, the text is displayed at the window’s (left) edge, mimicking the effect of `fill-column`.
 
-`visual-fill-column-disable-fringe`: if set to `t`, the left fringe is disabled. Note that if `visual-fill-column-center-text` is set to `t`, both the left and right fringes are disabled.
+`visual-fill-column-fringes-outside-margins`: if set to `t`, put the fringes outside the margins.
 
 All three options are buffer-local, so the values you set through Customize are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
