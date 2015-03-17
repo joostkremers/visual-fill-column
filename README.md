@@ -10,11 +10,13 @@ Install `visual-fill-column-mode` via [Melpa](http://melpa.org), or put `visual-
 
 ## Usage ##
 
-`visual-fill-column-mode` was conceived of to wrap lines in buffers that use  `visual-line-mode`. To activate this globally, add the command `global-visual-fill-column-mode` to your `init.el`.
+`visual-fill-column-mode` is primarily intended to be used alongside `visual-line-mode`. To activate `visual-fill-column-mode` automatically in every buffer that uses `visual-line-mode`, customise the option `global-visual-fill-column-mode` or add the command `(global-visual-fill-column-mode)` to your init file.
 
 However, `visual-fill-column-mode` is not tied to `visual-line-mode`: it is perfectly possible to use it on its own, in buffers that use some other word-wrapping method (e.g., `auto-fill-mode`), or in buffers that do not wrap at all. You can activate it interactively with `visual-fill-column-mode` or you can add the command `visual-fill-column-mode` in mode hooks.
 
-`visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
+`visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. The amount by which the right margin is widened depends on the window width and is automatically adjusted when the window’s width changes (e.g., when the window is split in two side-by-side windows).
+
+In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
 
 Widening the margin causes the fringe to be pushed inward. For this reason, the fringes are placed outside the margins by setting the variable `fringes-outside-margins` to `t`.
 
