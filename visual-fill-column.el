@@ -80,7 +80,8 @@ this option is set to a value, it is used instead."
 (advice-add 'split-window
     :around #'visual-fill-column--disable-on-split-window)
 
-(defun visual-fill-column--disable-on-split-window (fn window &rest args)
+(defun visual-fill-column--disable-on-split-window (fn &optional window
+                                                    &rest args)
   "Undo the effects of `visual-fill-column-mode' for splitting window."
   (if (and (or (not window) (window-live-p window))
            (buffer-local-value 'visual-fill-column-mode
