@@ -10,9 +10,11 @@ Install `visual-fill-column` via [Melpa](http://melpa.org), or put `visual-fill-
 
 ## Usage ##
 
-`visual-fill-column-mode` is primarily intended to be used alongside `visual-line-mode`. To activate `visual-fill-column-mode` automatically in every buffer that uses `visual-line-mode`, customise the option `global-visual-fill-column-mode` or add the command `(global-visual-fill-column-mode)` to your init file.
+`visual-fill-column-mode` is primarily intended to be used alongside `visual-line-mode`. If you’ve set the option `global-visual-line-mode`, or if you activate `visual-line-mode` in major mode hooks, you can customise the option `global-visual-fill-column-mode` or add the command `(global-visual-fill-column-mode)` to your init file. `visual-fill-column-mode` will then be activated in every buffer that uses `visual-line-mode`.
 
-However, `visual-fill-column-mode` is not tied to `visual-line-mode`: it is perfectly possible to use it on its own, in buffers that use some other word-wrapping method (e.g., `auto-fill-mode`), or in buffers that do not wrap at all. You can activate it interactively with `visual-fill-column-mode` or you can add the command `visual-fill-column-mode` in mode hooks.
+If you don’t use either of these methods to start `visual-line-mode`, and instead prefer to call `visual-line-mode` interactively (i.e., `M-x visual-line-mode`), you can add `visual-fill-column-mode` to `visual-line-mode-hook` in order to activate it automatically when you call `visual-line-mode`. 
+
+Note that `visual-fill-column-mode` is not tied to `visual-line-mode`: it is perfectly possible to use it on its own, in buffers that use some other word-wrapping method (e.g., `auto-fill-mode`), or in buffers that do not wrap at all. You can activate it interactively with `visual-fill-column-mode` or you can add the command `visual-fill-column-mode` in mode hooks.
 
 `visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. The amount by which the right margin is widened depends on the window width and is automatically adjusted when the window’s width changes (e.g., when the window is split in two side-by-side windows).
 
