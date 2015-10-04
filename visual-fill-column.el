@@ -104,7 +104,7 @@ in which `visual-line-mode' is active as well."
   "Return the body width of WINDOW.
 The body width here refers to the width of the text area plus the
 margins, but excluding the fringes, scroll bar and right
-divider. WINDOW defaults to the selected window."
+divider.  WINDOW defaults to the selected window."
   (or window (setq window (selected-window)))
   (let ((margins (window-margins window)))
     (+ (window-width window)
