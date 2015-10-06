@@ -6,7 +6,7 @@
 ;; Author: Joost Kremers <joostkremers@fastmail.fm>
 ;; Maintainer: Joost Kremers <joostkremers@fastmail.fm>
 ;; Created: 2015
-;; Version: 1.3
+;; Version: 1.5
 ;; Package-Requires: ((emacs "24.3"))
 
 ;; This file is NOT part of GNU Emacs.
