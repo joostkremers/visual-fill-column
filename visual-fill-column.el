@@ -26,11 +26,11 @@
 
 ;;; Commentary:
 
-;; `visual-fill-column-mode' is a small Emacs minor mode that mimics the
-;; effect of `fill-column' in `visual-line-mode'. Instead of wrapping lines
-;; at the window edge, which is the standard behaviour of
-;; `visual-line-mode', it wraps lines at `fill-column'. If `fill-column' is
-;; too large for the window, the text is wrapped at the window edge.
+;; `visual-fill-column-mode' is a small Emacs minor mode that mimics the effect of `fill-column'
+;; in `visual-line-mode'.  Instead of wrapping lines at the window edge, which
+;; is the standard behaviour of `visual-line-mode', it wraps lines at
+;; `fill-column'.  If `fill-column' is too large for the window, the text is
+;; wrapped at the window edge.
 
 ;;; Code:
 
@@ -127,12 +127,13 @@ right divider.  WINDOW defaults to the selected window."
          (right (if visual-fill-column-center-text
                     (/ margins 2)
                   margins)))
+
     ;; put an explicitly R2L buffer on the right side of the window
     (when (and (eq bidi-paragraph-direction 'right-to-left)
                (= left 0))
       (setq left right)
       (setq right 0))
-    ;; check values and set the margins
+
     (set-window-margins window left right)))
 
 (provide 'visual-fill-column)
