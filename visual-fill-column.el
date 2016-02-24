@@ -88,6 +88,7 @@ in which `visual-line-mode' is active as well."
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
+
   (visual-fill-column--adjust-window))
 
 (defun visual-fill-column-mode--disable ()
@@ -114,6 +115,27 @@ for use in the window parameter `split-window'."
       ;; Restore old margins if we failed.
       (when (and horizontal (not new))
 	(set-window-margins window (car margins) (cdr margins))))))
+
+(defun visual-fill-column-split-window-sensibly (&optional window)
+  "Split WINDOW sensibly, unsetting its margins first.
+This function unsets the window margins and calls
+`split-window-sensibly'.
+
+By default, `split-window-sensibly' does not split a window
+vertically if it has wide margins, even if there is enough space
+for a vertical split. This function can be used as the value of
+`split-window-preferred-function' to enable vertically splitting
+windows with wide margins."
+  (let ((margins (window-margins window))
+        new)
+    ;; unset the margins and try to split the window
+    (set-window-margins window nil nil)
+    (set-window-parameter window 'split-window nil)
+    (unwind-protect
+        (setq new (split-window-sensibly window))
+      (set-window-parameter window 'split-window #'visual-fill-column--split-window)
+      (when (not new)
+        (set-window-margins window (car margins) (cdr margins))))))
 
 (defun visual-fill-column--adjust-window ()
   "Adjust the window margins and fringes."
