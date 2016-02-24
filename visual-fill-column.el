@@ -1,6 +1,7 @@
 ;;; visual-fill-column.el --- fill-column for visual-line-mode  -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2015-2016 Joost Kremers
+;; Copyright (C) 2016 Martin Rudalics
 ;; All rights reserved.
 
 ;; Author: Joost Kremers <joostkremers@fastmail.fm>
@@ -95,9 +96,29 @@ in which `visual-line-mode' is active as well."
   (set-window-fringes (selected-window) nil)
   (set-window-margins (selected-window) 0 0))
 
+(defun visual-fill-column--split-window (window size side)
+  "Split WINDOW, unsetting its margins first.
+SIZE and SIDE are passed on to `split-window'.  This function is
+for use in the window parameter `split-window'."
+  (let ((horizontal (memq side '(t left right)))
+	margins new)
+    (when horizontal
+      ;; Reset margins.
+      (setq margins (window-margins window))
+      (set-window-margins window nil nil))
+    ;; Now try to split the window.
+    (set-window-parameter window 'split-window nil)
+    (unwind-protect
+	(setq new (split-window window size side))
+      (set-window-parameter window 'split-window 'visual-fill-column--split-window)
+      ;; Restore old margins if we failed.
+      (when (and horizontal (not new))
+	(set-window-margins window (car margins) (cdr margins))))))
+
 (defun visual-fill-column--adjust-window ()
   "Adjust the window margins and fringes."
   (set-window-fringes (selected-window) nil nil visual-fill-column-fringes-outside-margins)
+  (set-window-parameter nil 'split-window #'visual-fill-column--split-window)
   (visual-fill-column--set-margins))
 
 (defun visual-fill-column--window-max-text-width (&optional window)
