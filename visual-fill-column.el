@@ -122,7 +122,7 @@ This function unsets the window margins and calls
 
 By default, `split-window-sensibly' does not split a window
 vertically if it has wide margins, even if there is enough space
-for a vertical split. This function can be used as the value of
+for a vertical split.  This function can be used as the value of
 `split-window-preferred-function' to enable vertically splitting
 windows with wide margins."
   (let ((margins (window-margins window))
