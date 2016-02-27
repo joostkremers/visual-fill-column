@@ -129,10 +129,8 @@ windows with wide margins."
         new)
     ;; unset the margins and try to split the window
     (set-window-margins window nil nil)
-    (set-window-parameter window 'split-window nil)
     (unwind-protect
         (setq new (split-window-sensibly window))
-      (set-window-parameter window 'split-window #'visual-fill-column--split-window)
       (when (not new)
         (set-window-margins window (car margins) (cdr margins))))))
 
