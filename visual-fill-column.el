@@ -96,7 +96,7 @@ in which `visual-line-mode' is active as well."
   (set-window-fringes (selected-window) nil)
   (set-window-margins (selected-window) 0 0))
 
-(defun visual-fill-column--split-window (&optional window size side pixelwise)
+(defun visual-fill-column-split-window (&optional window size side pixelwise)
   "Split WINDOW, unsetting its margins first.
 SIZE, SIDE, and PIXELWISE are passed on to `split-window'.  This
 function is for use in the window parameter `split-window'."
@@ -110,7 +110,7 @@ function is for use in the window parameter `split-window'."
     (set-window-parameter window 'split-window nil)
     (unwind-protect
 	(setq new (split-window window size side pixelwise))
-      (set-window-parameter window 'split-window 'visual-fill-column--split-window)
+      (set-window-parameter window 'split-window #'visual-fill-column-split-window)
       ;; Restore old margins if we failed.
       (when (and horizontal (not new))
 	(set-window-margins window (car margins) (cdr margins))))))
