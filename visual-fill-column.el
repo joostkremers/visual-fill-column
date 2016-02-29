@@ -137,7 +137,7 @@ windows with wide margins."
 (defun visual-fill-column--adjust-window ()
   "Adjust the window margins and fringes."
   (set-window-fringes (selected-window) nil nil visual-fill-column-fringes-outside-margins)
-  (set-window-parameter nil 'split-window #'visual-fill-column--split-window)
+  (set-window-parameter nil 'split-window #'visual-fill-column-split-window)
   (visual-fill-column--set-margins))
 
 (defun visual-fill-column--window-max-text-width (&optional window)
