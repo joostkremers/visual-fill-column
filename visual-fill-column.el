@@ -115,6 +115,7 @@ function is for use in the window parameter `split-window'."
       (when (and horizontal (not new))
 	(set-window-margins window (car margins) (cdr margins))))))
 
+;;;###autoload
 (defun visual-fill-column-split-window-sensibly (&optional window)
   "Split WINDOW sensibly, unsetting its margins first.
 This function unsets the window margins and calls
