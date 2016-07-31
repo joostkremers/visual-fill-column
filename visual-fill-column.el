@@ -146,12 +146,22 @@ windows with wide margins."
   "Return the maximum possible text width of WINDOW.
 The maximum possible text width is the width of the current text
 area plus the margins, but excluding the fringes, scroll bar and
-right divider.  WINDOW defaults to the selected window."
+right divider.  WINDOW defaults to the selected window.  The
+return value is scaled to account for `text-scale-mode-amount'
+and `text-scale-mode-step'."
   (or window (setq window (selected-window)))
-  (let ((margins (window-margins window)))
-    (+ (window-width window)
-       (or (car margins) 0)
-       (or (cdr margins) 0))))
+  (let* ((margins (window-margins window))
+         (buffer (window-buffer window))
+         (scale (if (and (boundp 'text-scale-mode-step)
+                         (boundp 'text-scale-mode-amount))
+                    (with-current-buffer buffer
+                      (expt text-scale-mode-step
+                            text-scale-mode-amount))
+                  1.0)))
+    (truncate (/ (+ (window-width window)
+                    (or (car margins) 0)
+                    (or (cdr margins) 0))
+                 (float scale)))))
 
 (defun visual-fill-column--set-margins ()
   "Set window margins for the current window."
