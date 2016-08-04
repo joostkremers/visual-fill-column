@@ -26,10 +26,10 @@ Note that Emacs won’t vertically split a window (i.e., into two side-by-side w
 
 The width of the margins is adjusted for the text size. However, interactive adjustments (e.g., with `text-size-adjust`) cannot be detected by `visual-fill-column-mode`, therefore if you adjust the text size while `visual-fill-column-mode` is active, the margins won't be adjusted. To remedy this, you can force a redisplay, e.g., by switching buffers, splitting and unsplitting the window or calling `redraw-display`.
 
-Alternatively, you can advise the function `text-size-adjust` (or whatever function you use to adjust the text size) with the function `visual-fill-column-adjust-window`:
+Alternatively, you can advise the function `text-size-adjust` (or whatever function you use to adjust the text size) with the function `visual-fill-column-adjust`:
 
     (advice-add 'text-scale-adjust :after
-      #'visual-fill-column-adjust-window)
+      #'visual-fill-column-adjust)
 
 
 ## Options ##
