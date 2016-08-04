@@ -7,7 +7,7 @@
 ;; Author: Joost Kremers <joostkremers@fastmail.fm>
 ;; Maintainer: Joost Kremers <joostkremers@fastmail.fm>
 ;; Created: 2015
-;; Version: 1.8
+;; Version: 1.9
 ;; Package-Requires: ((emacs "24.3"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -87,12 +87,12 @@ in which `visual-line-mode' is active as well."
 
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
-  (add-hook 'window-configuration-change-hook #'visual-fill-column-adjust-window 'append 'local)
-  (visual-fill-column-adjust-window))
+  (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
+  (visual-fill-column--adjust-window))
 
 (defun visual-fill-column-mode--disable ()
   "Disable `visual-fill-column-mode' for the current buffer."
-  (remove-hook 'window-configuration-change-hook #'visual-fill-column-adjust-window 'local)
+  (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local)
   (set-window-fringes (selected-window) nil)
   (set-window-margins (selected-window) 0 0))
 
@@ -135,14 +135,20 @@ windows with wide margins."
       (when (not new)
         (set-window-margins window (car margins) (cdr margins))))))
 
-(defun visual-fill-column-adjust-window (&optional _inc)
-  "Adjust the window margins and fringes.
-The optional argument _INC allows the function to be used as
-advice to `text-scale-adjust'.  It is ignored here."
+(defun visual-fill-column--adjust-window ()
+  "Adjust the window margins and fringes."
   (set-window-fringes (selected-window) nil nil visual-fill-column-fringes-outside-margins)
   (if (>= emacs-major-version 25)
       (set-window-parameter (selected-window) 'split-window #'visual-fill-column-split-window))
   (visual-fill-column--set-margins))
+
+(defun visual-fill-column-adjust (&optional _inc)
+  "Adjust the window margins and fringes.
+This function is for use as advice to `text-scale-adjust'.  It
+calls `visual-fill-column--adjust-window', but only if
+`visual-fill-column' is active."
+  (if visual-fill-column-mode
+      (visual-fill-column--adjust-window)))
 
 (defun visual-fill-column--window-max-text-width (&optional window)
   "Return the maximum possible text width of WINDOW.
