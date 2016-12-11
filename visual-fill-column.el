@@ -78,6 +78,24 @@ this option is set to a value, it is used instead."
   :require 'visual-fill-column-mode
   :group 'visual-fill-column)
 
+(advice-add 'split-window
+    :around #'visual-fill-column--disable-on-split-window)
+
+(defun visual-fill-column--disable-on-split-window (fn &optional window
+                                                    &rest args)
+  "Undo the effects of `visual-fill-column-mode' for splitting window."
+  (if (and (or (not window) (window-live-p window))
+           (buffer-local-value 'visual-fill-column-mode
+                               (window-buffer (or window (selected-window)))))
+    (let ((inhibit-redisplay t))
+      (set-window-fringes (or window (selected-window)) nil)
+      (set-window-margins (or window (selected-window)) 0 0)
+      (unwind-protect (apply fn window args)
+        (save-selected-window
+          (when window (select-window window 'norecord))
+          (visual-fill-column--adjust-window))))
+    (apply fn window args)))
+
 (defun turn-on-visual-fill-column-mode ()
   "Turn on `visual-fill-column-mode'.
 Note that `visual-fill-column-mode' is only turned on in buffers
