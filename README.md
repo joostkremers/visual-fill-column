@@ -8,7 +8,7 @@
 `visual-fill-column` can be installed via [Melpa](http://melpa.org).
 
 
-## Usage ##
+## Activation ##
 
 `visual-fill-column-mode` is primarily intended to be used alongside `visual-line-mode`. If this is your desired use-case , the way to activate `visual-fill-column-mode` depends on how you activate `visual-line-mode`.
 
@@ -18,13 +18,22 @@ If you activate `visual-line-mode` by using `global-visual-line-mode`, you can u
 
     (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
 
-Note that `visual-fill-column-mode` is not tied to `visual-line-mode`: it is perfectly possible to use it on its own. You can activate it interactively with `visual-fill-column-mode` or you can add the command `visual-fill-column-mode` in mode hooks.
+Both these methods have the effect that `visual-fill-column-mode` is used in every buffer that uses `visual-line-mode`. If that's not what you want, you can also use the reverse method: add `visual-line-mode` to `visual-fill-column-mode-hook`:
+
+    (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
+
+This way, whenever you activate `visual-fill-column-mode` (e.g., interactively with `M-x visual-fill-column-mode` or in a major mode hook), `visual-line-mode` is also activated, but you can still activate `visual-line-mode` without using `visual-fill-column-mode`.
+
+Note that `visual-fill-column-mode` is not tied to `visual-line-mode`: it is perfectly possible to use it on its own.
 
 `visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. The amount by which the right margin is widened depends on the window width and is automatically adjusted when the window’s width changes (e.g., when the window is split in two side-by-side windows).
 
 In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
 
 Widening the margin normally causes the fringes to be pushed inward. Since this is visually less appealing, the fringes are placed outside the margins by setting the variable `fringes-outside-margins` to `t`. You can set this option to `nil' if you prefer to have the fringes close to the text.
+
+
+## Splitting windows ##
 
 Note that Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is not problematic, but it may be undesirable. To remedy this, you can set the option `split-window-preferred-function` to `visual-fill-column-split-window-sensibly`. This function first unsets the margins and then calls `split-window-sensibly` to do the actual splitting. After the split, the margins are adjusted again.
 
