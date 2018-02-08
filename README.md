@@ -30,7 +30,7 @@ Note that `visual-fill-column-mode` is not tied to `visual-line-mode`: it is per
 
 In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
 
-Widening the margin normally causes the fringes to be pushed inward. Since this is visually less appealing, the fringes are placed outside the margins. You can undo this by setting the variable `fringes-outside-margins` to `nil'.
+Widening the margin normally causes the fringes to be pushed inward. Since this is visually less appealing, the fringes are placed outside the margins. You can undo this by setting the variable `fringes-outside-margins` to `nil`.
 
 
 ## Splitting windows ##
