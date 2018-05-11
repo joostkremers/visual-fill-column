@@ -22,7 +22,11 @@ In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-
 
 Widening the margin causes the fringe to be pushed inward. For this reason, the fringes are placed outside the margins by setting the variable `fringes-outside-margins` to `t`.
 
-Note that Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is not problematic, but it may be undesirable. To remedy this, you can set the option `split-window-preferred-function` to `visual-fill-column-split-window-sensibly`. This function first unsets the margins and then calls `split-window-sensibly` to do the actual splitting.
+## Splitting a Window ##
+
+Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is not problematic, but it may be undesirable. To remedy this, you can set the option `split-window-preferred-function` to `visual-fill-column-split-window-sensibly`. This function first unsets the margins and then calls `split-window-sensibly` to do the actual splitting.
+
+## Adjusting Text Size ##
 
 The width of the margins is adjusted for the text size. However, interactive adjustments (e.g., with `text-size-adjust`) cannot be detected by `visual-fill-column-mode`, therefore if you adjust the text size while `visual-fill-column-mode` is active, the margins won't be adjusted. To remedy this, you can force a redisplay, e.g., by switching buffers, splitting and unsplitting the window or calling `redraw-display`.
 
