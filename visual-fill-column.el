@@ -81,7 +81,7 @@ this option is set to a value, it is used instead."
 (defun turn-on-visual-fill-column-mode ()
   "Turn on `visual-fill-column-mode'.
 Note that `visual-fill-column-mode' is only turned on in buffers
-in which `visual-line-mode' is active as well."
+in which Visual Line mode is active as well."
   (when visual-line-mode
     (visual-fill-column-mode 1)))
 
