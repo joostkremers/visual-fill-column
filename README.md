@@ -12,7 +12,7 @@
 
 `visual-fill-column-mode` is primarily intended to be used alongside `visual-line-mode`. If this is your desired use-case , the way to activate `visual-fill-column-mode` depends on how you activate `visual-line-mode`.
 
-If you activate `visual-line-mode` by using `global-visual-line-mode`, you can use `global-visual-fill-column-mode` (either set the user option through Customize, or call it as a function in your init file).
+If you activate `visual-line-mode` by using `global-visual-line-mode`, you can use `global-visual-fill-column-mode` (either set the user option through Customize, or call it as a function in your init file). `global-visual-fill-column-mode` turns on `visual-fill-column-mode` in every buffer that uses `visual-line-mode`, but only if this buffer is visiting a file.
 
 `visual-fill-column-mode` can also be turned on in hooks. For example, if you don't use `global-visual-line-mode` but still prefer to activate `visual-fill-column-mode` in every buffer that uses `visual-line-mode`, you can add `visual-fill-column-mode` to `visual-line-mode-hook`:
 
