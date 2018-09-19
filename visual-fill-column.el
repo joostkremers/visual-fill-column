@@ -90,6 +90,8 @@ that actually visit a file."
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
+  (if (>= emacs-major-version 26)
+      (add-hook 'window-size-change-functions #' visual-fill-column--adjust-frame 'append 'local))
   (visual-fill-column--adjust-window))
 
 (defun visual-fill-column-mode--disable ()
@@ -146,6 +148,13 @@ windows with wide margins."
     (if (>= emacs-major-version 25)
         (set-window-parameter (get-buffer-window (current-buffer)) 'split-window #'visual-fill-column-split-window))
     (visual-fill-column--set-margins)))
+
+(defun visual-fill-column--adjust-frame (frame)
+  "Adjust the windows of FRAME."
+  (mapc (lambda (w)
+          (with-selected-window w
+            (visual-fill-column--adjust-window)))
+        (window-list frame :never)))
 
 (defun visual-fill-column-adjust (&optional _inc)
   "Adjust the window margins and fringes.
