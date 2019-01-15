@@ -69,6 +69,13 @@ this option is set to a value, it is used instead."
 (define-minor-mode visual-fill-column-mode
   "Wrap lines according to `fill-column' in `visual-line-mode'."
   :init-value nil :lighter nil :global nil
+  :keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (vector 'left-margin mouse-wheel-down-event) 'mwheel-scroll)
+    (define-key map (vector 'left-margin mouse-wheel-up-event) 'mwheel-scroll)
+    (define-key map (vector 'right-margin mouse-wheel-down-event) 'mwheel-scroll)
+    (define-key map (vector 'right-margin mouse-wheel-up-event) 'mwheel-scroll)
+    map)
   (if visual-fill-column-mode
       (visual-fill-column-mode--enable)
     (visual-fill-column-mode--disable)))
