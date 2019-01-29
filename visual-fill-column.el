@@ -98,7 +98,7 @@ that actually visit a file."
   "Set up `visual-fill-column-mode' for the current buffer."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
   (if (>= emacs-major-version 26)
-      (add-hook 'window-size-change-functions #' visual-fill-column--adjust-frame 'append 'local))
+      (add-hook 'window-size-change-functions #'visual-fill-column--adjust-frame 'append 'local))
   (visual-fill-column--adjust-window))
 
 (defun visual-fill-column-mode--disable ()
