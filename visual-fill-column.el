@@ -189,7 +189,11 @@ and `text-scale-mode-step'."
                   1.0)))
     (truncate (/ (+ (window-width window)
                     (or (car margins) 0)
-                    (or (cdr margins) 0))
+                    (or (cdr margins) 0)
+                    (or (and (boundp 'display-line-numbers-width)
+                             (numberp display-line-numbers-width)
+                             (- display-line-numbers-width))
+                        0))
                  (float scale)))))
 
 (defun visual-fill-column--set-margins ()
