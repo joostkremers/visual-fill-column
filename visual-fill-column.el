@@ -205,9 +205,7 @@ and `text-scale-mode-step'."
          (left (if visual-fill-column-center-text
                    (/ margins 2)
                  0))
-         (right (if visual-fill-column-center-text
-                    (/ margins 2)
-                  margins)))
+         (right (- margins left)))
 
     ;; put an explicitly R2L buffer on the right side of the window
     (when (and (eq bidi-paragraph-direction 'right-to-left)
