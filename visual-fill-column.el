@@ -37,7 +37,7 @@
 ;;; Code:
 
 (defgroup visual-fill-column nil "Wrap lines according to `fill-column' in `visual-line-mode'."
-  :group 'wp
+  :group 'text
   :prefix "visual-fill-column-")
 
 (defcustom visual-fill-column-width nil
