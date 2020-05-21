@@ -50,8 +50,7 @@ The width of the margins is adjusted for the text size: larger text size means s
 
 Alternatively, you can advise the function `text-size-adjust` (or whatever function you use to adjust the text size) with the function `visual-fill-column-adjust`:
 
-    (advice-add 'text-scale-adjust :after
-      #'visual-fill-column-adjust)
+    (advice-add 'text-scale-adjust :after #'visual-fill-column-adjust)
 
 
 ## Options ##
