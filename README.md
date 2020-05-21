@@ -1,12 +1,11 @@
 # Visual Fill Column #
 
-`visual-fill-column-mode` is a small Emacs minor mode that mimics the effect of `fill-column` in `visual-line-mode`. Instead of wrapping lines at the window edge, which is the standard behaviour of `visual-line-mode`, it wraps lines at `fill-column`. If `fill-column` is too large for the window, the text is wrapped at the window edge. Told in images, `visual-fill-column` turns the view on the left into the view on the right:
-
-
+`visual-fill-column-mode` is a small Emacs minor mode that mimics the effect of `fill-column` in `visual-line-mode`. Instead of wrapping lines at the window edge, which is the standard behaviour of `visual-line-mode`, it wraps lines at `fill-column`. If `fill-column` is too large for the window, the text is wrapped at the window edge. Told in images, `visual-fill-column` turns the view on the left into the view on the right, without changing the contents of the file:
 
  Without `visual-fill-column`     | With `visual-fill-column`
 --------------------------------- | -------------------------------
  ![screenshot before](before.png) | ![screenshot after](after.png)
+
 
 ## Installation ##
 
