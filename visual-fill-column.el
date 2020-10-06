@@ -66,19 +66,43 @@ this option is set to a value, it is used instead."
 (make-variable-buffer-local 'visual-fill-column-center-text)
 (put 'visual-fill-column-center-text 'safe-local-variable 'symbolp)
 
+(defvar visual-fill-column-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [right-margin mouse-1] (global-key-binding [mouse-1])) ; #'mouse-set-point
+    (define-key map [right-margin mouse-2] (global-key-binding [mouse-2])) ; #'mouse-yank-primary
+    (define-key map [right-margin mouse-3] (global-key-binding [mouse-3])) ; #'mouse-save-then-kill
+    (define-key map [right-margin drag-mouse-1] #'ignore)
+    (define-key map [right-margin drag-mouse-2] #'ignore)
+    (define-key map [right-margin drag-mouse-3] #'ignore)
+    (define-key map [right-margin double-mouse-1] #'ignore)
+    (define-key map [right-margin double-mouse-2] #'ignore)
+    (define-key map [right-margin double-mouse-3] #'ignore)
+    (define-key map [right-margin triple-mouse-1] #'ignore)
+    (define-key map [right-margin triple-mouse-2] #'ignore)
+    (define-key map [right-margin triple-mouse-3] #'ignore)
+    (define-key map [left-margin mouse-1] (global-key-binding [mouse-1])) ; #'mouse-set-point
+    (define-key map [left-margin mouse-2] (global-key-binding [mouse-2])) ; #'mouse-yank-primary
+    (define-key map [left-margin mouse-3] (global-key-binding [mouse-3])) ; #'mouse-save-then-kill
+    (define-key map [left-margin drag-mouse-1] #'ignore)
+    (define-key map [left-margin drag-mouse-2] #'ignore)
+    (define-key map [left-margin drag-mouse-3] #'ignore)
+    (define-key map [left-margin double-mouse-1] #'ignore)
+    (define-key map [left-margin double-mouse-2] #'ignore)
+    (define-key map [left-margin double-mouse-3] #'ignore)
+    (define-key map [left-margin triple-mouse-1] #'ignore)
+    (define-key map [left-margin triple-mouse-2] #'ignore)
+    (define-key map [left-margin triple-mouse-3] #'ignore)
+    (when (bound-and-true-p mouse-wheel-mode)
+      (define-key map [right-margin mouse-wheel-down-event] #'mwheel-scroll)
+      (define-key map [right-margin mouse-wheel-up-event] #'mwheel-scroll)
+      (define-key map [left-margin mouse-wheel-down-event] #'mwheel-scroll)
+      (define-key map [left-margin mouse-wheel-up-event] #'mwheel-scroll))
+    map))
+
 ;;;###autoload
 (define-minor-mode visual-fill-column-mode
   "Wrap lines according to `fill-column' in `visual-line-mode'."
   :init-value nil :lighter nil :global nil
-  :keymap
-  (let ((map (make-sparse-keymap)))
-    (when (bound-and-true-p mouse-wheel-mode)
-      (progn
-        (define-key map (vector 'left-margin mouse-wheel-down-event) 'mwheel-scroll)
-        (define-key map (vector 'left-margin mouse-wheel-up-event) 'mwheel-scroll)
-        (define-key map (vector 'right-margin mouse-wheel-down-event) 'mwheel-scroll)
-        (define-key map (vector 'right-margin mouse-wheel-up-event) 'mwheel-scroll))
-      map))
   (if visual-fill-column-mode
       (visual-fill-column-mode--enable)
     (visual-fill-column-mode--disable)))
