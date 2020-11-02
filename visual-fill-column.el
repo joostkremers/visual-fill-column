@@ -135,8 +135,13 @@ that actually visit a file."
 
 (defun visual-fill-column-split-window (&optional window size side pixelwise)
   "Split WINDOW, unsetting its margins first.
-SIZE, SIDE, and PIXELWISE are passed on to `split-window'.  This
-function is for use in the window parameter `split-window'."
+SIZE and SIDE are passed on to `split-window'. This
+function is for use in the equally named window parameter
+`split-window'.
+ As of Emacs 27.1, PIXELWISE cannot be passed through
+directly and defaults to `nil', which may create problems when
+restoring a windows state. For troubleshooting see:
+https://github.com/joostkremers/visual-fill-column/pull/47"
   (let ((horizontal (memq side '(t left right)))
 	margins new)
     (when horizontal
