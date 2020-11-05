@@ -66,6 +66,9 @@ this option is set to a value, it is used instead."
 (make-variable-buffer-local 'visual-fill-column-center-text)
 (put 'visual-fill-column-center-text 'safe-local-variable 'symbolp)
 
+(defvar visual-fill-column--min-margins nil "Width of the margins before invoking `visual-fill-column-mode'.")
+(make-variable-buffer-local 'visual-fill-column--min-margins)
+
 (defvar visual-fill-column-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [right-margin mouse-1] (global-key-binding [mouse-1])) ; #'mouse-set-point
@@ -125,14 +128,19 @@ that actually visit a file."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
   (if (>= emacs-major-version 26)
       (add-hook 'window-size-change-functions #'visual-fill-column--adjust-frame 'append))
+  (let ((margins (window-margins (selected-window))))
+    (setq visual-fill-column--min-margins (cons (or (car margins) 0)
+                                                (or (cdr margins) 0))))
   (visual-fill-column--adjust-window))
 
 (defun visual-fill-column-mode--disable ()
   "Disable `visual-fill-column-mode' for the current buffer."
   (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local)
-  (set-window-fringes (get-buffer-window (current-buffer)) nil)
-  (set-window-margins (get-buffer-window (current-buffer)) nil)
-  (set-window-parameter (get-buffer-window (current-buffer)) 'min-margins nil))
+  (let ((window (get-buffer-window (current-buffer))))
+    (set-window-margins window (car visual-fill-column--min-margins) (cdr visual-fill-column--min-margins))
+    (set-window-fringes window nil)
+    (set-window-parameter window 'min-margins nil)
+    (kill-local-variable 'visual-fill-column--min-margins)))
 
 ;;;###autoload
 (defun visual-fill-column-split-window-sensibly (&optional window)
@@ -224,7 +232,7 @@ and `text-scale-mode-step'."
       (setq left right)
       (setq right 0))
 
-    (set-window-parameter window 'min-margins '(0 . 0))
+    (set-window-parameter window 'min-margins visual-fill-column--min-margins)
     (set-window-margins window left right)))
 
 (provide 'visual-fill-column)
