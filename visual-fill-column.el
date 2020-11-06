@@ -1,6 +1,6 @@
 ;;; visual-fill-column.el --- fill-column for visual-line-mode  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 Joost Kremers
+;; Copyright (C) 2015-2020 Joost Kremers
 ;; Copyright (C) 2016 Martin Rudalics
 ;; All rights reserved.
 
@@ -8,8 +8,8 @@
 ;; Maintainer: Joost Kremers <joostkremers@fastmail.fm>
 ;; URL: https://github.com/joostkremers/visual-fill-column
 ;; Created: 2015
-;; Version: 1.11
-;; Package-Requires: ((emacs "24.3"))
+;; Version: 2.0
+;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -125,17 +125,19 @@ that actually visit a file."
 
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
-  (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
-  (if (>= emacs-major-version 26)
-      (add-hook 'window-size-change-functions #'visual-fill-column--adjust-frame 'append))
+  (if (<= emacs-major-version 26)
+      (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local))
+  (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
   (let ((margins (window-margins (selected-window))))
     (setq visual-fill-column--min-margins (cons (or (car margins) 0)
                                                 (or (cdr margins) 0))))
-  (visual-fill-column--adjust-window))
+  (visual-fill-column--adjust-window (selected-window)))
 
 (defun visual-fill-column-mode--disable ()
   "Disable `visual-fill-column-mode' for the current buffer."
-  (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local)
+  (if (<= emacs-major-version 26)
+      (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local))
+  (remove-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'local)
   (let ((window (get-buffer-window (current-buffer))))
     (set-window-margins window (car visual-fill-column--min-margins) (cdr visual-fill-column--min-margins))
     (set-window-fringes window nil)
@@ -163,20 +165,27 @@ windows with wide margins."
       (when (not new)
         (set-window-margins window (car margins) (cdr margins))))))
 
-(defun visual-fill-column--adjust-window ()
-  "Adjust the window margins and fringes."
-  ;; Only run when we're really looking at a buffer that has v-f-c-mode enabled. See #22.
-  (when (buffer-local-value 'visual-fill-column-mode (window-buffer (selected-window)))
-    (set-window-fringes (get-buffer-window (current-buffer)) nil nil visual-fill-column-fringes-outside-margins)
-    (set-window-parameter (get-buffer-window (current-buffer)) 'min-margins '(0 . 0))
-    (visual-fill-column--set-margins)))
+(defun visual-fill-column--reset-window (window)
+  "Reset the parameters and margins of WINDOW."
+  (set-window-parameter window 'split-window nil) ; HERE
+  (set-window-parameter window 'min-margins nil)
+  (set-window-margins window nil))
 
-(defun visual-fill-column--adjust-frame (frame)
-  "Adjust the windows of FRAME."
-  (mapc (lambda (w)
-          (with-selected-window w
-            (visual-fill-column--adjust-window)))
-        (window-list frame :never)))
+(defun visual-fill-column--adjust-window (window)
+  "Adjust the margins and fringes of WINDOW.
+This function only adjusts the margins and fringes if the buffer
+displayed in the selected window has `visual-fill-column-mode'
+enabled."
+  (with-selected-window window
+    (visual-fill-column--reset-window window)
+    (when visual-fill-column-mode
+      (set-window-fringes window nil nil visual-fill-column-fringes-outside-margins)
+      (visual-fill-column--set-margins window))))
+
+(defun visual-fill-column--adjust-all-windows ()
+  "Adjust margins of all windows displaying the current buffer."
+  (mapc #'visual-fill-column--adjust-window
+        (get-buffer-window-list (current-buffer) 'no-minibuffer 'visible)))
 
 (defun visual-fill-column-adjust (&optional _inc)
   "Adjust the window margins and fringes.
@@ -184,7 +193,7 @@ This function is for use as advice to `text-scale-adjust'.  It
 calls `visual-fill-column--adjust-window', but only if
 `visual-fill-column' is active."
   (if visual-fill-column-mode
-      (visual-fill-column--adjust-window)))
+      (visual-fill-column--adjust-window (selected-window))))
 
 (defun visual-fill-column--window-max-text-width (&optional window)
   "Return the maximum possible text width of WINDOW.
@@ -211,11 +220,10 @@ and `text-scale-mode-step'."
                         0))
                  (float scale)))))
 
-(defun visual-fill-column--set-margins ()
-  "Set window margins for the current window."
+(defun visual-fill-column--set-margins (window)
+  "Set window margins for WINDOW."
   ;; calculate left & right margins
-  (let* ((window (get-buffer-window (current-buffer)))
-         (total-width (visual-fill-column--window-max-text-width window))
+  (let* ((total-width (visual-fill-column--window-max-text-width window))
          (width (or visual-fill-column-width
                     fill-column))
          (margins (if (< (- total-width width) 0) ; margins must be >= 0
