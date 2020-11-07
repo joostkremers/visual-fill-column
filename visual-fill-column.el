@@ -203,7 +203,7 @@ area plus the margins, but excluding the fringes, scroll bar and
 right divider.  WINDOW defaults to the selected window.  The
 return value is scaled to account for `text-scale-mode-amount'
 and `text-scale-mode-step'."
-  (or window (setq window (get-buffer-window (current-buffer))))
+  (or window (setq window (selected-window)))
   (let* ((margins (window-margins window))
          (buffer (window-buffer window))
          (scale (if (and (boundp 'text-scale-mode-step)
