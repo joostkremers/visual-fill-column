@@ -171,11 +171,12 @@ windows with wide margins."
   (set-window-parameter window 'min-margins nil)
   (set-window-margins window nil))
 
-(defun visual-fill-column--adjust-window (window)
+(defun visual-fill-column--adjust-window (&optional window)
   "Adjust the margins and fringes of WINDOW.
-This function only adjusts the margins and fringes if the buffer
-displayed in the selected window has `visual-fill-column-mode'
-enabled."
+WINDOW defaults to the selected window.  This function only
+adjusts the margins and fringes if the buffer displayed in the
+selected window has `visual-fill-column-mode' enabled."
+  (or window (setq window (selected-window)))
   (with-selected-window window
     (visual-fill-column--reset-window window)
     (when visual-fill-column-mode
