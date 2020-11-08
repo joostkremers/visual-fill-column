@@ -167,7 +167,6 @@ windows with wide margins."
 
 (defun visual-fill-column--reset-window (window)
   "Reset the parameters and margins of WINDOW."
-  (set-window-parameter window 'split-window nil) ; HERE
   (set-window-parameter window 'min-margins nil)
   (set-window-margins window nil))
 
