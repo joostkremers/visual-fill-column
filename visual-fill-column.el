@@ -69,6 +69,8 @@ this option is set to a value, it is used instead."
 (defvar visual-fill-column--min-margins nil "Width of the margins before invoking `visual-fill-column-mode'.")
 (make-variable-buffer-local 'visual-fill-column--min-margins)
 
+(defvar visual-fill-column--original-split-window-function nil "The value of `split-window-preferred-function'.")
+
 (defvar visual-fill-column-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [right-margin mouse-1] (global-key-binding [mouse-1])) ; #'mouse-set-point
@@ -125,12 +127,20 @@ that actually visit a file."
 
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
-  (if (<= emacs-major-version 26)
-      (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local))
+  (when (<= emacs-major-version 26)
+    (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local))
+
+  (when (version<= emacs-version "27.1")
+    (setq visual-fill-column--original-split-window-function split-window-preferred-function)
+    (setq-default split-window-preferred-function #'visual-fill-column-split-window-sensibly))
+
+  (when (version< "27.1" emacs-version)
+    (let ((margins (window-margins (selected-window))))
+      (setq visual-fill-column--min-margins (cons (or (car margins) 0)
+                                                  (or (cdr margins) 0)))))
+
   (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
-  (let ((margins (window-margins (selected-window))))
-    (setq visual-fill-column--min-margins (cons (or (car margins) 0)
-                                                (or (cdr margins) 0))))
+
   (visual-fill-column--adjust-window (selected-window)))
 
 (defun visual-fill-column-mode--disable ()
@@ -144,17 +154,38 @@ that actually visit a file."
     (set-window-parameter window 'min-margins nil)
     (kill-local-variable 'visual-fill-column--min-margins)))
 
+(defun visual-fill-column-split-window (&optional window size side)
+  "Split WINDOW, unsetting its margins first.
+SIZE, and SIDE are passed on to `split-window'.  This function is
+for use in the window parameter `split-window'."
+  ;; Note: `split-window' has another optional argument, `pixelwise', but this
+  ;; is not passed to the function in the `split-window' window parameter.
+  (let ((horizontal (memq side '(t left right)))
+	margins new)
+    (when horizontal
+      ;; Reset margins.
+      (setq margins (window-margins window))
+      (set-window-margins window nil))
+    ;; Now try to split the window.
+    (set-window-parameter window 'split-window nil)
+    (unwind-protect
+	(setq new (split-window window size side))
+      (set-window-parameter window 'split-window #'visual-fill-column-split-window)
+      ;; Restore old margins if we failed.
+      (when (and horizontal (not new))
+	(set-window-margins window (car margins) (cdr margins))))))
+
 ;;;###autoload
 (defun visual-fill-column-split-window-sensibly (&optional window)
   "Split WINDOW sensibly, unsetting its margins first.
 This function unsets the window margins and calls
 `split-window-sensibly'.
 
-By default, `split-window-sensibly' does not split a window
-vertically if it has wide margins, even if there is enough space
-for a vertical split.  This function can be used as the value of
-`split-window-preferred-function' to enable vertically splitting
-windows with wide margins."
+By default, `split-window-sensibly' does not split a window in
+two side-by-side windows if it has wide margins, even if there is
+enough space for a vertical split.  This function is used as the
+value of `split-window-preferred-function' to allow
+`display-buffer' to split such windows."
   (let ((margins (window-margins window))
         new)
     ;; unset the margins and try to split the window
@@ -167,6 +198,7 @@ windows with wide margins."
 
 (defun visual-fill-column--reset-window (window)
   "Reset the parameters and margins of WINDOW."
+  (set-window-parameter window 'split-window nil)
   (set-window-parameter window 'min-margins nil)
   (set-window-margins window nil))
 
@@ -180,6 +212,10 @@ selected window has `visual-fill-column-mode' enabled."
     (visual-fill-column--reset-window window)
     (when visual-fill-column-mode
       (set-window-fringes window nil nil visual-fill-column-fringes-outside-margins)
+      (if visual-fill-column--original-split-window-function   ; This is non-nil if the window parameter `split-window' is used (Emacs <= 27.1).
+          (set-window-parameter window 'split-window #'visual-fill-column-split-window))
+      (if visual-fill-column--min-margins  ; This is non-nil if the window parameter `min-margins' is used (Emacs 27.2).
+          (set-window-parameter window 'min-margins visual-fill-column--min-margins))
       (visual-fill-column--set-margins window))))
 
 (defun visual-fill-column--adjust-all-windows ()
@@ -240,7 +276,6 @@ and `text-scale-mode-step'."
       (setq left right)
       (setq right 0))
 
-    (set-window-parameter window 'min-margins visual-fill-column--min-margins)
     (set-window-margins window left right)))
 
 (provide 'visual-fill-column)
