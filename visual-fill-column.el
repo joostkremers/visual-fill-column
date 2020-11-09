@@ -127,8 +127,8 @@ that actually visit a file."
 
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
-  (when (<= emacs-major-version 26)
-    (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local))
+  (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local)
+  (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
 
   (when (version<= emacs-version "27.1")
     (setq visual-fill-column--original-split-window-function split-window-preferred-function)
@@ -138,8 +138,6 @@ that actually visit a file."
     (let ((margins (window-margins (selected-window))))
       (setq visual-fill-column--min-margins (cons (or (car margins) 0)
                                                   (or (cdr margins) 0)))))
-
-  (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
 
   (visual-fill-column--adjust-window (selected-window)))
 
