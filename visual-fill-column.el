@@ -66,7 +66,7 @@ this option is set to a value, it is used instead."
 (make-variable-buffer-local 'visual-fill-column-center-text)
 (put 'visual-fill-column-center-text 'safe-local-variable 'symbolp)
 
-(defcustom visual-fill-column-inhibit-sensible-window-split t
+(defcustom visual-fill-column-inhibit-sensible-window-split nil
   "Do not set `split-window-preferred-function' to allow vertical window splits.
 By default, `split-window-preferred-function' is set to
 `visual-fill-column-split-window-sensibly', in order to allow
@@ -74,8 +74,8 @@ By default, `split-window-preferred-function' is set to
 Unset this option if you wish to use your custom function for
 `split-window-sensibly'."
   :group 'visual-fill-column
-  :type '(choice (const :tag "Allow vertical window split" t)
-                 (const :tag "Use standard window split" nil)))
+  :type '(choice (const :tag "Allow vertical window split" nil)
+                 (const :tag "Use standard window split" t)))
 
 (defvar visual-fill-column--use-split-window-parameter nil "If set, the window parameter `split-window' is used.")
 
