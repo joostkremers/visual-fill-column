@@ -39,9 +39,11 @@ Widening the margin normally causes the fringes to be pushed inward. Since this 
 
 ## Splitting a Window ##
 
-Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is technically not problematic, but it may be undesirable from a user's point of view. To remedy this, you can set the option `split-window-preferred-function` to `visual-fill-column-split-window-sensibly`. This function first unsets the margins and then calls `split-window-sensibly` to do the actual splitting:
+Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is technically not problematic, but it may be undesirable from a user's point of view. To remedy this, `visual-fill-column-mode` sets the option `split-window-preferred-function` to `visual-fill-column-split-window-sensibly`. This function first unsets the margins and then calls `split-window-sensibly` to do the actual splitting.
 
-    (setq-default split-window-preferred-function 'visual-fill-column-split-window-sensibly)
+You can set the option `visual-fill-column-inhibit-sensible-window-split` to inhibit this and use the default function `split-window-sensibly' or another custom function.
+
+Note that this option does not affect the ability to split windows manually. Even if you set `visual-fill-column-inhibit-sensible-window-split`, you can still split a window into two side-by-side windows by invoking e.g., `split-window-right` (`C-x 3`).
 
 
 ## Adjusting Text Size ##
@@ -55,7 +57,7 @@ Alternatively, you can advise the function `text-size-adjust` with the function 
 
 ## Customisation ##
 
-The customisation group `visual-fill-column` has three options (beside `global-visual-fill-column-mode`) that can be used to customise `visual-fill-column`:
+The customisation group `visual-fill-column` has four options (beside `global-visual-fill-column-mode`) that can be used to customise `visual-fill-column`:
 
 `visual-fill-column-width`: column at which to wrap lines. If set to `nil` (the default), use the value of `fill-column` instead.
 
@@ -63,6 +65,8 @@ The customisation group `visual-fill-column` has three options (beside `global-v
 
 `visual-fill-column-fringes-outside-margins`: if set to `t`, put the fringes outside the margins.
 
-All three options are buffer-local, so the values you set in your init file are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
+These three options are buffer-local, so the values you set in your init file are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
+
+The fourth option, `visual-fill-column-inhibit-sensible-window-split` can be set to keep `visual-fill-column-mode` from setting `split-window-preferred-function`.
 
 `visual-fill-column-mode` also binds several mouse events for the left and right margins, so that scrolling or clicking on the margins does what you'd expect (rather than cause an "event not bound" error). If you wish to adjust these bindings, you should do so in `visual-fill-column-mode-map`.
