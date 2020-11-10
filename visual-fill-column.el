@@ -66,6 +66,19 @@ this option is set to a value, it is used instead."
 (make-variable-buffer-local 'visual-fill-column-center-text)
 (put 'visual-fill-column-center-text 'safe-local-variable 'symbolp)
 
+(defcustom visual-fill-column-inhibit-sensible-window-split t
+  "Do not set `split-window-preferred-function' to allow vertical window splits.
+By default, `split-window-preferred-function' is set to
+`visual-fill-column-split-window-sensibly', in order to allow
+`display-buffer' to split windows in two side-by-side windows.
+Unset this option if you wish to use your custom function for
+`split-window-sensibly'."
+  :group 'visual-fill-column
+  :type '(choice (const :tag "Allow vertical window split" t)
+                 (const :tag "Use standard window split" nil)))
+
+(defvar visual-fill-column--use-split-window-parameter nil "If set, the window parameter `split-window' is used.")
+
 (defvar visual-fill-column--min-margins nil "Width of the margins before invoking `visual-fill-column-mode'.")
 (make-variable-buffer-local 'visual-fill-column--min-margins)
 
@@ -130,9 +143,12 @@ that actually visit a file."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local)
   (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
 
-  (when (version<= emacs-version "27.1")
+  (when (not visual-fill-column-inhibit-sensible-window-split)
     (setq visual-fill-column--original-split-window-function split-window-preferred-function)
     (setq-default split-window-preferred-function #'visual-fill-column-split-window-sensibly))
+
+  (when (version<= emacs-version "27.1")
+    (setq visual-fill-column--use-split-window-parameter t))
 
   (when (version< "27.1" emacs-version)
     (let ((margins (window-margins (selected-window))))
@@ -210,7 +226,7 @@ selected window has `visual-fill-column-mode' enabled."
     (visual-fill-column--reset-window window)
     (when visual-fill-column-mode
       (set-window-fringes window nil nil visual-fill-column-fringes-outside-margins)
-      (if visual-fill-column--original-split-window-function   ; This is non-nil if the window parameter `split-window' is used (Emacs <= 27.1).
+      (if visual-fill-column--use-split-window-parameter
           (set-window-parameter window 'split-window #'visual-fill-column-split-window))
       (if visual-fill-column--min-margins  ; This is non-nil if the window parameter `min-margins' is used (Emacs 27.2).
           (set-window-parameter window 'min-margins visual-fill-column--min-margins))
