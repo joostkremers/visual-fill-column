@@ -248,10 +248,10 @@ calls `visual-fill-column--adjust-window', but only if
 (defun visual-fill-column--window-max-text-width (&optional window)
   "Return the maximum possible text width of WINDOW.
 The maximum possible text width is the width of the current text
-area plus the margins, but excluding the fringes, scroll bar and
-right divider.  WINDOW defaults to the selected window.  The
-return value is scaled to account for `text-scale-mode-amount'
-and `text-scale-mode-step'."
+area plus the margins, but excluding the fringes, scroll bar,
+right divider, and line number width.  WINDOW defaults to the
+selected window.  The return value is scaled to account for
+`text-scale-mode-amount' and `text-scale-mode-step'."
   (or window (setq window (selected-window)))
   (let* ((margins (window-margins window))
          (buffer (window-buffer window))
@@ -264,10 +264,9 @@ and `text-scale-mode-step'."
     (truncate (/ (+ (window-width window)
                     (or (car margins) 0)
                     (or (cdr margins) 0)
-                    (or (and (boundp 'display-line-numbers-width)
-                             (numberp display-line-numbers-width)
-                             (- display-line-numbers-width))
-                        0))
+                    (if (fboundp 'line-number-display-width)
+                        (- (+ 2 (line-number-display-width)))
+                      0))
                  (float scale)))))
 
 (defun visual-fill-column--set-margins (window)
