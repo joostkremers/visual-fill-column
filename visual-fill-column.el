@@ -298,7 +298,7 @@ Return a cons cell of the new left and right margins."
 
 (defun visual-fill-column--set-margins (window)
   "Set window margins for WINDOW."
-  ;; calculate left & right margins
+  ;; Calculate left & right margins.
   (let* ((total-width (visual-fill-column--window-max-text-width window))
          (width (or visual-fill-column-width
                     fill-column))
