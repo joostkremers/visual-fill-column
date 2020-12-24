@@ -32,7 +32,7 @@ Note that while `visual-fill-column-mode` was written with the purpose of wrappi
 
 `visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. The amount by which the right margin is widened depends on the window width and is automatically adjusted when the window’s width changes (e.g., when the window is split in two side-by-side windows).
 
-In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
+In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side, and the meaning of `visual-fill-column-offset` is reversed.
 
 Widening the margin normally causes the fringes to be pushed inward. Since this is visually less appealing, the fringes are placed outside the margins. You can undo this by setting the variable `visual-fill-column-fringes-outside-margins` to `nil`.
 
@@ -62,6 +62,8 @@ The customisation group `visual-fill-column` has four options (beside `global-vi
 `visual-fill-column-width`: column at which to wrap lines. If set to `nil` (the default), use the value of `fill-column` instead.
 
 `visual-fill-column-center-text`: if set to `t`, centre the text area in the window. By default, the text is displayed at the window’s (left) edge, mimicking the effect of `fill-column`.
+
+`visual-fill-column-offset`: offset the text area by a certain number of columns. The value can be positive (offset to the left) or negative (offset to the right). A negative value only makes sense if `visual-fill-column-center-text` is set.
 
 `visual-fill-column-fringes-outside-margins`: if set to `t`, put the fringes outside the margins.
 
