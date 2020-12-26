@@ -73,6 +73,7 @@ left (negative value).  A negative value only makes sense if
 `visual-fill-column-center-text' is set."
   :group 'visual-fill-column
   :type '(integer :tag "Offset (in columns)"))
+(make-variable-buffer-local 'visual-fill-column-offset)
 (put 'visual-fill-column-center-text 'safe-local-variable 'integerp)
 
 (defcustom visual-fill-column-inhibit-sensible-window-split nil
