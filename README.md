@@ -41,7 +41,7 @@ Widening the margin normally causes the fringes to be pushed inward. Since this 
 
 Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is technically not problematic, but it may be undesirable from a user's point of view. To remedy this, `visual-fill-column-mode` sets the option `split-window-preferred-function` to `visual-fill-column-split-window-sensibly`. This function first unsets the margins and then calls `split-window-sensibly` to do the actual splitting.
 
-You can set the option `visual-fill-column-inhibit-sensible-window-split` to inhibit this and use the default function `split-window-sensibly' or another custom function.
+You can set the option `visual-fill-column-inhibit-sensible-window-split` to inhibit this and use the default function `split-window-sensibly` or another custom function.
 
 Note that this option does not affect the ability to split windows manually. Even if you set `visual-fill-column-inhibit-sensible-window-split`, you can still split a window into two side-by-side windows by invoking e.g., `split-window-right` (`C-x 3`).
 
