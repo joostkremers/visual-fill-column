@@ -66,15 +66,6 @@ this option is set to a value, it is used instead."
 (make-variable-buffer-local 'visual-fill-column-center-text)
 (put 'visual-fill-column-center-text 'safe-local-variable 'symbolp)
 
-(defcustom visual-fill-column-offset 0
-  "Number of columns to shift the text area.
-The text area is shifted to the right (positive value) or
-left (negative value).  A negative value only makes sense if
-`visual-fill-column-center-text' is set."
-  :group 'visual-fill-column
-  :type '(integer :tag "Offset (in columns)"))
-(put 'visual-fill-column-center-text 'safe-local-variable 'integerp)
-
 (defcustom visual-fill-column-inhibit-sensible-window-split nil
   "Do not set `split-window-preferred-function' to allow vertical window splits.
 By default, `split-window-preferred-function' is set to
@@ -278,24 +269,6 @@ selected window.  The return value is scaled to account for
                       0))
                  (float scale)))))
 
-(defun visual-fill-column--calculate-margin-shift (left right offset)
-  "Calculate new margins for LEFT and RIGHT based on OFFSET.
-OFFSET is added to LEFT and subtracted from RIGHT.  If either
-value then becomes less than zero, it is set to zero and the
-other value is compensated for the difference.
-
-Return a cons cell of the new left and right margins."
-  (let ((shifted-left (+ left offset))
-        (shifted-right (- right offset)))
-    (cond
-     ((< shifted-left 0)
-      (setq shifted-right (+ shifted-right shifted-left))
-      (setq shifted-left 0))
-     ((< shifted-right 0)
-      (setq shifted-left (+ shifted-left shifted-right))
-      (setq shifted-right 0)))
-    (cons shifted-left shifted-right)))
-
 (defun visual-fill-column--set-margins (window)
   "Set window margins for WINDOW."
   ;; Calculate left & right margins.
@@ -310,16 +283,11 @@ Return a cons cell of the new left and right margins."
                  0))
          (right (- margins left)))
 
-    (if (/= visual-fill-column-offset 0)
-        (let ((shift (visual-fill-column--calculate-margin-shift left right visual-fill-column-offset)))
-          (setq left (car shift)
-                right (cdr shift))))
-
-    ;; In an explicitly R2L buffer, swap left and right margins.
-    (when (eq bidi-paragraph-direction 'right-to-left)
-      (setq left (prog1
-                     right
-                   (setq right left))))
+    ;; put an explicitly R2L buffer on the right side of the window
+    (when (and (eq bidi-paragraph-direction 'right-to-left)
+               (= left 0))
+      (setq left right)
+      (setq right 0))
 
     (set-window-margins window left right)))
 
