@@ -165,8 +165,9 @@ that actually visit a file."
 
   (when (version< "27.1" emacs-version)
     (let ((margins (window-margins (selected-window))))
-      (setq visual-fill-column--min-margins (cons (or (car margins) 0)
-                                                  (or (cdr margins) 0)))))
+      (unless visual-fill-column--min-margins
+        (setq visual-fill-column--min-margins (cons (or (car margins) 0)
+                                                    (or (cdr margins) 0))))))
 
   (visual-fill-column--adjust-window (selected-window)))
 
