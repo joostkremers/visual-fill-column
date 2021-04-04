@@ -57,7 +57,7 @@ Alternatively, you can advise the function `text-size-adjust` with the function 
 
 ## Customisation ##
 
-The customisation group `visual-fill-column` has four options (beside `global-visual-fill-column-mode`) that can be used to customise `visual-fill-column`:
+The customisation group `visual-fill-column` has five options (beside `global-visual-fill-column-mode`) that can be used to customise `visual-fill-column`:
 
 `visual-fill-column-width`: column at which to wrap lines. If set to `nil` (the default), use the value of `fill-column` instead.
 
@@ -67,8 +67,8 @@ The customisation group `visual-fill-column` has four options (beside `global-vi
 
 `visual-fill-column-fringes-outside-margins`: if set to `t`, put the fringes outside the margins.
 
-These three options are buffer-local, so the values you set in your init file are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
+These four options are buffer-local, so the values you set in your init file are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
 
-The fourth option, `visual-fill-column-inhibit-sensible-window-split` can be set to keep `visual-fill-column-mode` from setting `split-window-preferred-function`.
+The fifth option, `visual-fill-column-inhibit-sensible-window-split` can be set to keep `visual-fill-column-mode` from setting `split-window-preferred-function`, as discussed above.
 
 `visual-fill-column-mode` also binds several mouse events for the left and right margins, so that scrolling or clicking on the margins does what you'd expect (rather than cause an "event not bound" error). If you wish to adjust these bindings, you should do so in `visual-fill-column-mode-map`.
