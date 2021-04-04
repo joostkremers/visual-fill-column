@@ -150,7 +150,7 @@ that actually visit a file."
 
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
-  (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local)
+  (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
 
   (when (not visual-fill-column-inhibit-sensible-window-split)
     (setq-default split-window-preferred-function #'visual-fill-column-split-window-sensibly))
@@ -241,11 +241,6 @@ selected window has `visual-fill-column-mode' enabled."
       (if visual-fill-column--use-min-margins  ; This is non-nil if the window parameter `min-margins' is used (Emacs 27.2).
           (set-window-parameter window 'min-margins '(0 . 0)))
       (visual-fill-column--set-margins window))))
-
-(defun visual-fill-column--adjust-all-windows ()
-  "Adjust margins of all windows displaying the current buffer."
-  (mapc #'visual-fill-column--adjust-window
-        (get-buffer-window-list (current-buffer) 'no-minibuffer 'visible)))
 
 (defun visual-fill-column-adjust (&optional _inc)
   "Adjust the window margins and fringes.
