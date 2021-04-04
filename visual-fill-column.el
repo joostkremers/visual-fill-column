@@ -84,8 +84,8 @@ otherwise reduce the actual size of the text area."
 By default, `split-window-preferred-function' is set to
 `visual-fill-column-split-window-sensibly', in order to allow
 `display-buffer' to split windows in two side-by-side windows.
-Unset this option if you wish to use your custom function for
-`split-window-sensibly'."
+Unset this option if you wish to use the default or a custom
+function for `split-window-sensibly'."
   :group 'visual-fill-column
   :type '(choice (const :tag "Allow vertical window split" nil)
                  (const :tag "Use standard window split" t)))
