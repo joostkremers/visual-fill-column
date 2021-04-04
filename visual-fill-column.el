@@ -173,8 +173,7 @@ that actually visit a file."
 
 (defun visual-fill-column-mode--disable ()
   "Disable `visual-fill-column-mode' for the current buffer."
-  (if (<= emacs-major-version 26)
-      (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local))
+  (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'local)
   (remove-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'local)
   (let ((window (get-buffer-window (current-buffer))))
     (set-window-margins window (car visual-fill-column--min-margins) (cdr visual-fill-column--min-margins))
