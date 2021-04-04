@@ -94,8 +94,6 @@ Unset this option if you wish to use your custom function for
 
 (defvar visual-fill-column--use-min-margins nil "If set, the window parameter `min-margins' is used.")
 
-(defvar visual-fill-column--original-split-window-function nil "The value of `split-window-preferred-function'.")
-
 (defvar visual-fill-column-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [right-margin mouse-1] (global-key-binding [mouse-1])) ; #'mouse-set-point
@@ -155,7 +153,6 @@ that actually visit a file."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local)
 
   (when (not visual-fill-column-inhibit-sensible-window-split)
-    (setq visual-fill-column--original-split-window-function split-window-preferred-function)
     (setq-default split-window-preferred-function #'visual-fill-column-split-window-sensibly))
 
   (when (version<= emacs-version "27.1")
