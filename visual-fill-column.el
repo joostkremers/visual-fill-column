@@ -153,15 +153,21 @@ that actually visit a file."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
 
   (when (not visual-fill-column-inhibit-sensible-window-split)
+    ;; Note that `split-window-preferred-function' is not reset to its original
+    ;; value when `visual-fill-column-mode' is disabled, because it may still be
+    ;; enabled in other buffers.  When `visual-fill-column-mode' is disabled,
+    ;; `visual-fill-column-split-window-sensibly' simply invokes
+    ;; `split-window-sensibly', so keeping it is harmless.
     (setq-default split-window-preferred-function #'visual-fill-column-split-window-sensibly))
 
-  (when (version<= emacs-version "27.1")
+  (cond
+   ((version<= emacs-version "27.1")
     (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
     (setq visual-fill-column--use-split-window-parameter t))
 
-  (when (version< "27.1" emacs-version)
+   ((version< "27.1" emacs-version)
     (add-hook 'window-state-change-functions #'visual-fill-column--adjust-window 'append 'local)
-    (setq visual-fill-column--use-min-margins t))
+    (setq visual-fill-column--use-min-margins t)))
 
   (visual-fill-column--adjust-window (selected-window)))
 
@@ -170,12 +176,14 @@ that actually visit a file."
   (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local)
 
   (let ((window (get-buffer-window (current-buffer))))
-    (when (version<= emacs-version "27.1")
+    (cond
+     ((version<= emacs-version "27.1")
       (remove-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'local))
-    (when (version< "27.1" emacs-version)
+
+     ((version< "27.1" emacs-version)
       (remove-hook 'window-state-change-functions #'visual-fill-column--adjust-window 'local)
       (set-window-margins window 0 0)
-      (set-window-parameter window 'min-margins nil))
+      (set-window-parameter window 'min-margins nil)))
     (set-window-fringes window nil)))
 
 (defun visual-fill-column-split-window (&optional window size side)
