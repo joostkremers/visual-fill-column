@@ -154,16 +154,17 @@ that actually visit a file."
 (defun visual-fill-column-mode--enable ()
   "Set up `visual-fill-column-mode' for the current buffer."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'append 'local)
-  (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
 
   (when (not visual-fill-column-inhibit-sensible-window-split)
     (setq visual-fill-column--original-split-window-function split-window-preferred-function)
     (setq-default split-window-preferred-function #'visual-fill-column-split-window-sensibly))
 
   (when (version<= emacs-version "27.1")
+    (add-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'append 'local)
     (setq visual-fill-column--use-split-window-parameter t))
 
   (when (version< "27.1" emacs-version)
+    (add-hook 'window-state-change-functions #'visual-fill-column--adjust-window 'append 'local)
     (let ((margins (window-margins (selected-window))))
       (unless visual-fill-column--min-margins
         (setq visual-fill-column--min-margins (cons (or (car margins) 0)
@@ -173,13 +174,17 @@ that actually visit a file."
 
 (defun visual-fill-column-mode--disable ()
   "Disable `visual-fill-column-mode' for the current buffer."
-  (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-all-windows 'local)
-  (remove-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'local)
+  (remove-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'local)
+
   (let ((window (get-buffer-window (current-buffer))))
-    (set-window-margins window (car visual-fill-column--min-margins) (cdr visual-fill-column--min-margins))
-    (set-window-fringes window nil)
-    (set-window-parameter window 'min-margins nil)
-    (kill-local-variable 'visual-fill-column--min-margins)))
+    (when (version<= emacs-version "27.1")
+      (remove-hook 'window-size-change-functions #'visual-fill-column--adjust-window 'local))
+    (when (version< "27.1" emacs-version)
+      (remove-hook 'window-state-change-functions #'visual-fill-column--adjust-window 'local)
+      (set-window-margins window (car visual-fill-column--min-margins) (cdr visual-fill-column--min-margins))
+      (set-window-parameter window 'min-margins nil)
+      (kill-local-variable 'visual-fill-column--min-margins))
+    (set-window-fringes window nil)))
 
 (defun visual-fill-column-split-window (&optional window size side)
   "Split WINDOW, unsetting its margins first.
