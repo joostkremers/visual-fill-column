@@ -8,7 +8,7 @@
 ;; Maintainer: Joost Kremers <joostkremers@fastmail.fm>
 ;; URL: https://github.com/joostkremers/visual-fill-column
 ;; Created: 2015
-;; Version: 2.3
+;; Version: 2.4
 ;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -79,13 +79,12 @@ otherwise reduce the actual size of the text area."
 (make-variable-buffer-local 'visual-fill-column-center-text)
 (put 'visual-fill-column-center-text 'safe-local-variable 'symbolp)
 
-(defcustom visual-fill-column-inhibit-sensible-window-split nil
-  "Do not set `split-window-preferred-function' to allow vertical window splits.
-By default, `split-window-preferred-function' is set to
+(defcustom visual-fill-column-enable-sensible-window-split nil
+  "Set `split-window-preferred-function' so as to allow vertical window splits.
+If this option is set, `visual-fill-column' sets the variable
+`split-window-preferred-function' to
 `visual-fill-column-split-window-sensibly', in order to allow
-`display-buffer' to split windows in two side-by-side windows.
-Unset this option if you wish to use the default or a custom
-function for `split-window-sensibly'."
+`display-buffer' to split windows in two side-by-side windows."
   :group 'visual-fill-column
   :type '(choice (const :tag "Allow vertical window split" nil)
                  (const :tag "Use standard window split" t)))
@@ -152,7 +151,7 @@ that actually visit a file."
   "Set up `visual-fill-column-mode' for the current buffer."
   (add-hook 'window-configuration-change-hook #'visual-fill-column--adjust-window 'append 'local)
 
-  (when (not visual-fill-column-inhibit-sensible-window-split)
+  (when visual-fill-column-enable-sensible-window-split
     ;; Note that `split-window-preferred-function' is not reset to its original
     ;; value when `visual-fill-column-mode' is disabled, because it may still be
     ;; enabled in other buffers.  When `visual-fill-column-mode' is disabled,
