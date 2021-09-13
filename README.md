@@ -47,6 +47,8 @@ Note that `visual-fill-column-center-text` automatically becomes buffer-local wh
 
     (setq-default visual-fill-column-center-text t)
 
+If you are interested in a fully distraction-free writing environment, that not only centres the text but also removes the window decorations, the mode line etc., take a look at [`writeroom-mode`] (https://github.com/joostkremers/writeroom-mode).
+
 
 ## Splitting a Window ##
 
