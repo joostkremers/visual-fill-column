@@ -37,6 +37,17 @@ In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-
 Widening the margin normally causes the fringes to be pushed inward. Since this is visually less appealing, the fringes are placed outside the margins. You can undo this by setting the variable `visual-fill-column-fringes-outside-margins` to `nil`.
 
 
+## Centering the text ##
+
+If you wish to centre the buffer text, you can customise the option `visual-fill-column-center-text` and set it to `t`. This has the following effect:
+
+![screenshot after](centred.png)
+
+Note that `visual-fill-column-center-text` automatically becomes buffer-local when it is set. Therefore, if you wish to make this the default, either use the Customize interface or use `setq-default` in your init file, rather than `setq`:
+
+    (setq-default visual-fill-column-center-text t)
+
+
 ## Splitting a Window ##
 
 Emacs won’t vertically split a window (i.e., into two side-by-side windows) that has wide margins. As a result, displaying buffers such as `*Help*` buffers, `*Completion*` buffers, etc., won’t split a window vertically, even if there appears to be enough space for a vertical split. This is technically not problematic, but it may be undesirable from a user's point of view. To remedy this, you can set the option `visual-fill-column-enable-sensible-window-split`. When this option is set, the variable `split-window-preferred-function` is set to the function `visual-fill-column-split-window-sensibly`, which first removes the margins and then calls `split-window-sensibly` to do the actual splitting.
