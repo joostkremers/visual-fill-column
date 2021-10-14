@@ -1,6 +1,6 @@
 # Visual Fill Column #
 
-`visual-fill-column-mode` is a small Emacs minor mode that mimics the effect of `fill-column` in `visual-line-mode`. Instead of wrapping lines at the window edge, which is the standard behaviour of `visual-line-mode`, it wraps lines at `fill-column`. If `fill-column` is too large for the window, the text is wrapped at the window edge. Told in images, `visual-fill-column` turns the view on the left into the view on the right, without changing the contents of the file:
+`visual-fill-column-mode` is a small Emacs minor mode that mimics the effect of `fill-column` in `visual-line-mode`. Instead of wrapping lines at the window edge, which is the standard behaviour of `visual-line-mode`, it wraps lines at `fill-column` (or `visual-fill-column-width`, if set).  That is, it turns the view on the left into the view on the right, without changing the contents of the file:
 
  Without `visual-fill-column`     | With `visual-fill-column`
 --------------------------------- | -------------------------------
@@ -9,45 +9,47 @@
 
 ## Installation ##
 
-`visual-fill-column` can be installed via [Melpa](http://melpa.org).
+`visual-fill-column` can be installed from [Melpa](https://melpa.org/).
 
 
 ## Usage ##
 
-`visual-fill-column-mode` is primarily intended to be used alongside `visual-line-mode`. If this is your desired use-case , the way to activate `visual-fill-column-mode` depends on how you activate `visual-line-mode`.
-
-If you activate `visual-line-mode` by using `global-visual-line-mode`, you can use `global-visual-fill-column-mode` (either set the user option through Customize, or call it as a function in your init file). `global-visual-fill-column-mode` turns on `visual-fill-column-mode` in every buffer that is visiting a file. (In buffers that do not visit any file, `visual-fill-column-mode` is mostly useless and sometimes even disruptive.)
-
-`visual-fill-column-mode` can also be turned on in hooks. For example, if you don't use `global-visual-line-mode`, but would like to activate `visual-fill-column-mode` in every buffer that uses `visual-line-mode`, you can add `visual-fill-column-mode` to `visual-line-mode-hook`:
+The primary purpose of `visual-fill-column-mode` is to wrap text at `fill-column` in buffers that use `visual-line-mode`. The most straightforward way to achieve this is to add it to `visual-line-mode-hook`:
 
     (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
 
-This method has the effect that `visual-fill-column-mode` is used in every buffer that uses `visual-line-mode`. If that's not what you want, you can also use the reverse method: add `visual-line-mode` to `visual-fill-column-mode-hook`:
+There is also a globalised mode `global-visual-fill-column-mode`. This mode turns on `visual-fill-column-mode` in every buffer that visits a file. Activate it either through Customize or by calling it as a function in your init file. In buffers that do not visit a file, `visual-fill-column-mode` may be disruptive, so `global-visual-fill-column-mode` is restricted to file-visiting buffers. (You can, of course still activate `visual-fill-column-mode` manually or in hooks for such buffers, though.)
 
-    (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
 
-This way, whenever you activate `visual-fill-column-mode` (e.g., interactively with `M-x visual-fill-column-mode` or in a major mode hook), `visual-line-mode` is also activated, but you can still activate `visual-line-mode` without using `visual-fill-column-mode`.
+## Wrap prefix ##
 
-Note that while `visual-fill-column-mode` was written with the purpose of wrapping text in buffers using `visual-line-mode`, it is not tied to  `visual-line-mode`: it is perfectly possible to use `visual-fill-column-mode` on its own.
+In `auto-fill-mode`, there is an option `adaptive-fill-mode`, which ensures that if the first line of a paragraph is indented or has, e.g., a mail quote prefix (`> `), this is applied to the entire paragraph. To get the same effect, you can use the package [`adaptive-wrap`](https://elpa.gnu.org/packages/adaptive-wrap.html), which is available from GNU Elpa. Like `visual-fill-column-mode`, its effect is purely visual, the buffer text is not actually modified. The effect of this package is shown in the following two images:
 
-`visual-fill-column-mode` works by widening the right window margin. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. The amount by which the right margin is widened depends on the window width and is automatically adjusted when the window’s width changes (e.g., when the window is split in two side-by-side windows).
-
-In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side.
-
-Widening the margin normally causes the fringes to be pushed inward. Since this is visually less appealing, the fringes are placed outside the margins. You can undo this by setting the variable `visual-fill-column-fringes-outside-margins` to `nil`.
+ Without `adaptive-wrap`     | With `adaptive-wrap`
+--------------------------------- | -------------------------------
+ ![without adaptive-wrap](no-adaptive-wrap.png) | ![with adaptive-wrap](adaptive-wrap.png)
 
 
 ## Centering the text ##
 
-If you wish to centre the buffer text, you can customise the option `visual-fill-column-center-text` and set it to `t`. This has the following effect:
+Another use case for `visual-fill-column` is to centre the text in a window:
 
 ![screenshot after](centred.png)
+
+This effect is achieved by setting the user option `visual-fill-column-center-text`. Note that `visual-fill-column-mode` is not dependent on `visual-line-mode`, so it can be used to centre text in buffers that use `auto-fill-mode` or in programming modes.
 
 Note that `visual-fill-column-center-text` automatically becomes buffer-local when it is set. Therefore, if you wish to make this the default, either use the Customize interface or use `setq-default` in your init file, rather than `setq`:
 
     (setq-default visual-fill-column-center-text t)
 
-If you are interested in a fully distraction-free writing environment, that not only centres the text but also removes the window decorations, the mode line etc., take a look at [`writeroom-mode`](https://github.com/joostkremers/writeroom-mode).
+Note: If you are interested in a fully distraction-free writing environment, that not only centres the text but also removes the window decorations, the mode line etc., take a look at [`writeroom-mode`](https://github.com/joostkremers/writeroom-mode).
+
+
+## How it works ##
+
+`visual-fill-column-mode` works by widening the window margins. This reduces the area that is available for text display, creating the appearance that the text is wrapped at `fill-column`. In the default configuration, the only right margin is widened, mimicking the effect of `auto-fill-mode`. In buffers that are explicitly right-to-left (i.e., those where `bidi-paragraph-direction` is set to `right-to-left`), the left margin is expanded, so that the text appears at the window’s right side. When `visual-fill-column-center-text` is set, both margins are widened.
+
+The amount by which the margins are widened depends on the window width and is automatically adjusted when the window’s width changes (e.g., when the window is split in two side-by-side windows).
 
 
 ## Splitting a Window ##
@@ -80,7 +82,7 @@ The customisation group `visual-fill-column` has five options (beside `global-vi
 
 `visual-fill-column-extra-text-width`: extra columns added to the left and right side of the text area. This should be a cons cell of two integers `(<left> . <right>)`. If `visual-fill-column-center-text` is `t`, the text area is centred before the extra columns are added. This is currently used by `writeroom-mode` to add room for line numbers without shifting the text off-centre.
 
-`visual-fill-column-fringes-outside-margins`: if set to `t`, put the fringes outside the margins.
+`visual-fill-column-fringes-outside-margins`: if set to `t`, put the fringes outside the margins. Widening the margin would normally cause the fringes to be pushed inward, because by default, they appear between the margins and the text. This effect may be visually less appealing, therefore, `visual-fill-column-mode` places the fringes outside the margins. If you prefer to have the fringes inside the margins, unset this option.
 
 These four options are buffer-local, so the values you set in your init file are default values. They can also be set in mode hooks or directory or file local variables in order to customise particular files or file types.
 
