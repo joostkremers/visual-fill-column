@@ -6,7 +6,7 @@
 
 ;; Author: Joost Kremers <joostkremers@fastmail.fm>
 ;; Maintainer: Joost Kremers <joostkremers@fastmail.fm>
-;; URL: https://github.com/joostkremers/visual-fill-column
+;; URL: https://codeberg.org/joostkremers/visual-fill-column
 ;; Created: 2015
 ;; Version: 2.4
 ;; Package-Requires: ((emacs "25.1"))
